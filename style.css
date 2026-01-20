@@ -1,31 +1,24 @@
 :root {
-  /* --- dark mode (default) --- */
-  --bg-color: #1e1e1e;
-  --text-main: #ecf0f1;
-  --text-muted: #636e72;
-  --accent-color: #00b894;
-  --input-border: #4a4a4a;
-  --modal-bg: rgba(30, 30, 30, 0.85); /* Glass effect bg */
-
-  /* animation variables */
-  --intro-duration: 3s;
-  --easing-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --bg-color: #0f172a;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-color: #38bdf8;
+  --panel-bg: rgba(15, 23, 42, 0.95);
+  --input-border: #334155;
+  --easing: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* --- light mode override --- */
 [data-theme="light"] {
-  --bg-color: #f8f9fa;
-  --text-main: #2d3436;
-  --text-muted: #b2bec3;
-  --accent-color: #2d3436;
-  --input-border: #dfe6e9;
-  --modal-bg: rgba(255, 255, 255, 0.85);
+  --bg-color: #f8fafc;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --panel-bg: rgba(255, 255, 255, 0.95);
+  --input-border: #cbd5e1;
 }
 
 body {
   font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   margin: 0;
   height: 100vh;
   display: flex;
@@ -34,98 +27,284 @@ body {
   background-color: var(--bg-color);
   color: var(--text-main);
   overflow: hidden;
-  transition:
-    background-color 0.5s ease,
-    color 0.5s ease;
+  transition: background-color 0.5s ease;
 }
 
-/* --- COMMON ICON BUTTONS (Gear & Sun) --- */
-.icon-btn {
+/* --- HUD --- */
+#hud-layer {
   position: absolute;
-  top: 20px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 50;
+  opacity: 0;
+  transition: opacity 1s ease;
+  pointer-events: none;
+}
+#hud-layer.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.profile-card {
+  min-width: 200px;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.username {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  font-size: 1rem;
+}
+.tier-badge {
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  font-weight: 600;
+  margin-left: auto;
+  letter-spacing: 1px;
+}
+
+.save-btn {
+  background: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  font-size: 0.6rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+}
+.save-btn:hover {
+  background: var(--accent-color);
+  color: var(--bg-color);
+}
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent-color);
+  width: 0%;
+  transition: width 0.5s ease;
+}
+.icon-btn {
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 10px;
-  opacity: 0.6;
-  transition:
-    opacity 0.3s,
-    transform 0.3s;
-  z-index: 100;
+  padding: 8px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
 }
-
 .icon-btn:hover {
   opacity: 1;
-  transform: rotate(15deg);
 }
-
-.settings-toggle {
-  left: 20px;
-} /* Gear on Left */
-.theme-toggle {
-  right: 20px;
-} /* Theme on Right */
-
 .icon-svg {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   fill: var(--text-main);
-  transition: fill 0.5s ease;
 }
 
-/* --- SETTINGS OVERLAY (Glassmorphism) --- */
-#settings-overlay {
+/* --- MAIN APP --- */
+#app-layer {
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.98);
+  transition: all 1s var(--easing);
+  width: 100%;
+}
+#app-layer.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* CIRCULAR PROGRESS STYLES */
+.timer-wrapper {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hidden by default (switched via JS) */
+.timer-wrapper.hidden {
+  display: none;
+}
+
+.progress-ring {
+  transform: rotate(-90deg); /* Start from top */
+  transform-origin: 50% 50%;
+}
+
+.progress-ring__circle {
+  transition: stroke-dashoffset 0.35s;
+  transform: rotate(0deg);
+  transform-origin: 50% 50%;
+  stroke-linecap: round;
+}
+
+/* Glow Style Modifier */
+.progress-ring.glow .progress-ring__circle {
+  filter: drop-shadow(0 0 8px var(--accent-color));
+}
+
+.timer-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4.5rem;
+  font-weight: 200;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -2px;
+  margin: 0; /* Override old margin */
+}
+
+.status-badge {
+  letter-spacing: 2px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: lowercase;
+  margin-bottom: 2rem;
+}
+
+/* LINEAR PROGRESS STYLES (Legacy) */
+.cycle-container {
+  width: 280px;
+  margin: 0 auto 3rem auto;
+}
+.cycle-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.cycle-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.cycle-fill {
+  height: 100%;
+  background: var(--text-muted);
+  transition:
+    width 1s linear,
+    background-color 0.5s;
+}
+.cycle-fill.complete {
+  background: var(--accent-color);
+  box-shadow: 0 0 15px var(--accent-color);
+}
+
+/* CONTROLS */
+button {
+  background: transparent;
+  border: 1px solid var(--text-main);
+  padding: 0.9rem 2.5rem;
+  border-radius: 4px;
+  color: var(--text-main);
+  cursor: pointer;
+  text-transform: lowercase;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+button:hover {
+  background: var(--text-main);
+  color: var(--bg-color);
+}
+button.active {
+  background: var(--text-main);
+  color: var(--bg-color);
+}
+.secondary-btn {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  margin-left: 15px;
+  animation: pulse 2s infinite;
+}
+.secondary-btn:hover {
+  background: var(--accent-color);
+  color: var(--bg-color);
+}
+
+/* --- SIDEBAR --- */
+#side-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 350px;
+  height: 100vh;
+  background: var(--panel-bg);
+  backdrop-filter: blur(20px);
+  z-index: 999;
+  transform: translateX(100%);
+  transition: transform 0.4s var(--easing);
+  padding: 2.5rem;
+  box-sizing: border-box;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+#side-panel.open {
+  transform: translateX(0);
+}
+
+#panel-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--modal-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  z-index: 200;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 998;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s;
 }
-
-#settings-overlay.visible {
+#panel-backdrop.visible {
   opacity: 1;
   pointer-events: all;
 }
 
-.settings-modal {
-  width: 300px;
-  padding: 2rem;
-  text-align: center;
-  transform: scale(0.95);
-  transition: transform 0.3s var(--easing-smooth);
-}
-
-#settings-overlay.visible .settings-modal {
-  transform: scale(1);
-}
-
-.settings-header {
+.panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   border-bottom: 1px solid var(--input-border);
-  padding-bottom: 10px;
+  padding-bottom: 15px;
 }
-
-.settings-header h2 {
-  font-weight: 300;
-  font-size: 1.5rem;
+.panel-header h2 {
   margin: 0;
+  font-weight: 300;
   letter-spacing: 2px;
+  font-size: 1.2rem;
+  text-transform: lowercase;
 }
-
-.close-btn {
+#close-panel-btn {
   background: none;
   border: none;
   font-size: 2rem;
@@ -134,66 +313,78 @@ body {
   line-height: 1;
 }
 
-.setting-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.setting-group {
   margin-bottom: 2rem;
 }
-
-.setting-label {
-  font-size: 0.9rem;
+.setting-group label {
+  display: block;
   color: var(--text-muted);
+  margin-bottom: 10px;
+  font-size: 0.8rem;
   letter-spacing: 1px;
 }
-
-/* Language Toggles */
 .toggle-group {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
+.style-btn,
 .lang-btn {
   background: transparent;
-  border: 1px solid var(--text-muted);
+  border: 1px solid var(--input-border);
   color: var(--text-muted);
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.8rem;
   transition: all 0.2s;
 }
-
+.style-btn.active,
 .lang-btn.active {
   border-color: var(--accent-color);
   color: var(--bg-color);
-  background: var(--text-main);
+  background: var(--accent-color);
 }
 
-/* About Section */
-.about-section {
-  margin-top: 3rem;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  line-height: 1.6;
+.full-width-btn {
+  width: 100%;
+  margin-top: 10px;
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--bg-color);
+}
+.theme-switch-btn {
+  width: 100%;
+  margin-top: 10px;
 }
 
-.about-app {
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin-bottom: 5px;
-}
-.version {
-  font-weight: 300;
-  opacity: 0.7;
-}
-.about-links a {
+input[type="text"] {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--input-border);
   color: var(--text-main);
-  text-decoration: none;
-  border-bottom: 1px dotted var(--text-main);
+  font-size: 1.1rem;
+  width: 100%;
+  padding: 12px 0;
+  margin-bottom: 20px;
+  outline: none;
 }
 
-/* --- INTRO ANIMATION (Unchanged) --- */
+.panel-view.hidden {
+  display: none;
+}
+.lb-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.9rem;
+}
+.hidden {
+  display: none !important;
+}
+
+/* Intro */
 #intro-layer {
   position: fixed;
   top: 0;
@@ -208,146 +399,29 @@ body {
   pointer-events: none;
   transition: opacity 1.2s ease-in-out;
 }
-
-.logo-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .logo-text {
   font-size: 3rem;
   letter-spacing: 0.5rem;
   font-weight: 300;
   opacity: 0;
-  transform: translateY(40px) scale(0.95);
-  filter: blur(10px);
-  animation: revealZen var(--intro-duration) var(--easing-smooth) forwards;
-}
-
-.kanji {
-  font-weight: 600;
-  display: inline-block;
-  margin-left: 10px;
-  font-size: 3.2rem;
-  opacity: 0;
   transform: translateY(40px);
   filter: blur(10px);
-  animation: revealZen var(--intro-duration) var(--easing-smooth) 0.2s forwards;
+  animation: revealZen 2.5s var(--easing) forwards;
 }
-
 .subtitle {
-  margin-top: 10px;
-  font-size: 0.9rem;
+  margin-top: 12px;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  letter-spacing: 0.2rem;
+  letter-spacing: 0.3rem;
   opacity: 0;
   transform: translateY(20px);
   filter: blur(5px);
-  animation: revealZen var(--intro-duration) var(--easing-smooth) 0.6s forwards;
+  animation: revealZen 2.5s var(--easing) 0.5s forwards;
 }
-
 @keyframes revealZen {
-  0% {
-    opacity: 0;
-    transform: translateY(40px) scale(0.98);
-    filter: blur(10px);
-  }
-  100% {
+  to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
     filter: blur(0);
   }
-}
-
-/* --- MAIN APP UI --- */
-#app-layer {
-  opacity: 0;
-  transform: scale(0.98);
-  filter: blur(5px);
-  transition: all 1.5s var(--easing-smooth);
-  text-align: center;
-  display: none;
-}
-
-#app-layer.visible {
-  opacity: 1;
-  transform: scale(1);
-  filter: blur(0);
-}
-
-.timer-display {
-  font-size: 6rem;
-  font-weight: 200;
-  font-variant-numeric: tabular-nums;
-  margin: 1.5rem 0;
-  letter-spacing: -2px;
-}
-
-.status-badge {
-  letter-spacing: 2px;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-bottom: 2rem;
-}
-
-.controls {
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: baseline;
-}
-
-input[type="number"] {
-  border: none;
-  background: transparent;
-  border-bottom: 1px solid var(--input-border);
-  width: 60px;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: 300;
-  color: var(--text-main);
-  outline: none;
-  padding-bottom: 5px;
-  transition: border-color 0.3s;
-}
-
-input[type="number"]:focus {
-  border-bottom-color: var(--accent-color);
-}
-
-.unit-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-left: 8px;
-}
-
-button#toggle-btn {
-  background: transparent;
-  border: 1px solid var(--text-main);
-  padding: 0.8rem 2.5rem;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  letter-spacing: 1px;
-  transition: all 0.4s var(--easing-smooth);
-  color: var(--text-main);
-}
-
-button#toggle-btn:hover {
-  background: var(--text-main);
-  color: var(--bg-color);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-button#toggle-btn.active {
-  background: var(--text-main);
-  color: var(--bg-color);
 }
