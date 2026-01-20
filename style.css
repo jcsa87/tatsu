@@ -1,0 +1,192 @@
+:root {
+  --bg-color: #f8f9fa;
+  --text-main: #2d3436;
+  --text-muted: #b2bec3;
+  --accent-color: #2d3436; /* Keeping it monochrome/minimalist */
+  --intro-duration: 3s;
+  --easing-smooth: cubic-bezier(0.16, 1, 0.3, 1); /* Custom "Expo Out" curve */
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-color);
+  overflow: hidden; /* Prevents scrollbars during animation */
+  color: var(--text-main);
+}
+
+/* --- MODULE: INTRO ANIMATION --- */
+#intro-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none; /* Allows clicking through immediately if needed */
+  transition: opacity 1.2s ease-in-out;
+}
+
+.logo-container {
+  position: relative;
+  overflow: hidden; /* Masks text if we want to slide it up from nothing */
+}
+
+.logo-text {
+  font-size: 3rem;
+  letter-spacing: 0.8rem;
+  font-weight: 300;
+  text-transform: uppercase;
+
+  /* Initial State */
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+  filter: blur(10px);
+
+  /* Animation */
+  animation: revealZen var(--intro-duration) var(--easing-smooth) forwards;
+}
+
+.kanji {
+  font-weight: 600;
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 3.2rem;
+
+  /* Kanjis fade in slightly slower for effect */
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(10px);
+  animation: revealZen var(--intro-duration) var(--easing-smooth) 0.2s forwards;
+}
+
+@keyframes revealZen {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* --- MODULE: MAIN APP UI --- */
+#app-layer {
+  opacity: 0;
+  transform: scale(0.98);
+  filter: blur(5px);
+  transition: all 1.5s var(--easing-smooth);
+  text-align: center;
+  display: none; /* Hidden until intro finishes */
+}
+
+/* Active State class applied by JS */
+#app-layer.visible {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+.timer-display {
+  font-size: 6rem;
+  font-weight: 200;
+  font-variant-numeric: tabular-nums;
+  margin: 1.5rem 0;
+  letter-spacing: -2px;
+}
+
+.status-badge {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+/* Minimalist Inputs & Buttons */
+.controls {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+}
+
+input[type="number"] {
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid var(--text-muted);
+  width: 60px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--text-main);
+  outline: none;
+  padding-bottom: 5px;
+  transition: border-color 0.3s;
+}
+
+input[type="number"]:focus {
+  border-bottom-color: var(--accent-color);
+}
+
+.unit-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+button {
+  background: transparent;
+  border: 1px solid var(--text-main);
+  padding: 0.8rem 2.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.4s var(--easing-smooth);
+  color: var(--text-main);
+}
+
+button:hover {
+  background: var(--text-main);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button.active {
+  background: var(--text-main);
+  color: #fff;
+}
+
+/* When App is disabled (running) */
+input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
