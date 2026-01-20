@@ -1,10 +1,25 @@
 :root {
+  /* --- dark mode (default) --- */
+  --bg-color: #1e1e1e;
+  --text-main: #ecf0f1;
+  --text-muted: #636e72;
+  --accent-color: #00b894;
+  --input-border: #4a4a4a;
+  --modal-bg: rgba(30, 30, 30, 0.85); /* Glass effect bg */
+
+  /* animation variables */
+  --intro-duration: 3s;
+  --easing-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- light mode override --- */
+[data-theme="light"] {
   --bg-color: #f8f9fa;
   --text-main: #2d3436;
   --text-muted: #b2bec3;
-  --accent-color: #2d3436; /* Keeping it monochrome/minimalist */
-  --intro-duration: 3s;
-  --easing-smooth: cubic-bezier(0.16, 1, 0.3, 1); /* Custom "Expo Out" curve */
+  --accent-color: #2d3436;
+  --input-border: #dfe6e9;
+  --modal-bg: rgba(255, 255, 255, 0.85);
 }
 
 body {
@@ -17,43 +32,196 @@ body {
   justify-content: center;
   align-items: center;
   background-color: var(--bg-color);
-  overflow: hidden; /* Prevents scrollbars during animation */
   color: var(--text-main);
+  overflow: hidden;
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
 }
 
-/* --- MODULE: INTRO ANIMATION --- */
+/* --- COMMON ICON BUTTONS (Gear & Sun) --- */
+.icon-btn {
+  position: absolute;
+  top: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  opacity: 0.6;
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+  z-index: 100;
+}
+
+.icon-btn:hover {
+  opacity: 1;
+  transform: rotate(15deg);
+}
+
+.settings-toggle {
+  left: 20px;
+} /* Gear on Left */
+.theme-toggle {
+  right: 20px;
+} /* Theme on Right */
+
+.icon-svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--text-main);
+  transition: fill 0.5s ease;
+}
+
+/* --- SETTINGS OVERLAY (Glassmorphism) --- */
+#settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#settings-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.settings-modal {
+  width: 300px;
+  padding: 2rem;
+  text-align: center;
+  transform: scale(0.95);
+  transition: transform 0.3s var(--easing-smooth);
+}
+
+#settings-overlay.visible .settings-modal {
+  transform: scale(1);
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--input-border);
+  padding-bottom: 10px;
+}
+
+.settings-header h2 {
+  font-weight: 300;
+  font-size: 1.5rem;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+/* Language Toggles */
+.toggle-group {
+  display: flex;
+  gap: 10px;
+}
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid var(--text-muted);
+  color: var(--text-muted);
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.lang-btn.active {
+  border-color: var(--accent-color);
+  color: var(--bg-color);
+  background: var(--text-main);
+}
+
+/* About Section */
+.about-section {
+  margin-top: 3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.about-app {
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+.version {
+  font-weight: 300;
+  opacity: 0.7;
+}
+.about-links a {
+  color: var(--text-main);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--text-main);
+}
+
+/* --- INTRO ANIMATION (Unchanged) --- */
 #intro-layer {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: #fff;
+  background: var(--bg-color);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 10;
-  pointer-events: none; /* Allows clicking through immediately if needed */
+  pointer-events: none;
   transition: opacity 1.2s ease-in-out;
 }
 
 .logo-container {
-  position: relative;
-  overflow: hidden; /* Masks text if we want to slide it up from nothing */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .logo-text {
   font-size: 3rem;
-  letter-spacing: 0.8rem;
+  letter-spacing: 0.5rem;
   font-weight: 300;
-  text-transform: uppercase;
-
-  /* Initial State */
   opacity: 0;
   transform: translateY(40px) scale(0.95);
   filter: blur(10px);
-
-  /* Animation */
   animation: revealZen var(--intro-duration) var(--easing-smooth) forwards;
 }
 
@@ -62,12 +230,21 @@ body {
   display: inline-block;
   margin-left: 10px;
   font-size: 3.2rem;
-
-  /* Kanjis fade in slightly slower for effect */
   opacity: 0;
   transform: translateY(40px);
   filter: blur(10px);
   animation: revealZen var(--intro-duration) var(--easing-smooth) 0.2s forwards;
+}
+
+.subtitle {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  letter-spacing: 0.2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  filter: blur(5px);
+  animation: revealZen var(--intro-duration) var(--easing-smooth) 0.6s forwards;
 }
 
 @keyframes revealZen {
@@ -83,17 +260,16 @@ body {
   }
 }
 
-/* --- MODULE: MAIN APP UI --- */
+/* --- MAIN APP UI --- */
 #app-layer {
   opacity: 0;
   transform: scale(0.98);
   filter: blur(5px);
   transition: all 1.5s var(--easing-smooth);
   text-align: center;
-  display: none; /* Hidden until intro finishes */
+  display: none;
 }
 
-/* Active State class applied by JS */
 #app-layer.visible {
   opacity: 1;
   transform: scale(1);
@@ -109,14 +285,12 @@ body {
 }
 
 .status-badge {
-  text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-bottom: 2rem;
 }
 
-/* Minimalist Inputs & Buttons */
 .controls {
   display: flex;
   gap: 2rem;
@@ -133,7 +307,7 @@ body {
 input[type="number"] {
   border: none;
   background: transparent;
-  border-bottom: 1px solid var(--text-muted);
+  border-bottom: 1px solid var(--input-border);
   width: 60px;
   text-align: center;
   font-size: 1.5rem;
@@ -149,44 +323,31 @@ input[type="number"]:focus {
 }
 
 .unit-label {
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   margin-left: 8px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
-button {
+button#toggle-btn {
   background: transparent;
   border: 1px solid var(--text-main);
   padding: 0.8rem 2.5rem;
   border-radius: 50px;
   cursor: pointer;
-  font-size: 0.85rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
   transition: all 0.4s var(--easing-smooth);
   color: var(--text-main);
 }
 
-button:hover {
+button#toggle-btn:hover {
   background: var(--text-main);
-  color: #fff;
+  color: var(--bg-color);
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-button:active {
-  transform: translateY(0);
-}
-
-button.active {
+button#toggle-btn.active {
   background: var(--text-main);
-  color: #fff;
-}
-
-/* When App is disabled (running) */
-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  color: var(--bg-color);
 }
