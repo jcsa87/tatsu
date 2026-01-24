@@ -1,0 +1,148 @@
+/* --- DISCREET (Abajo, sutil) --- */
+.health-toast.discreet {
+  position: fixed;
+  bottom: 90px; /* Encima de DailyMetrics */
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  z-index: 100;
+  animation: floatUp 0.5s ease;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #4ade80;
+  animation: pulse 2s infinite;
+}
+
+/* --- NORMAL (Esquina inferior derecha) --- */
+.health-toast.normal {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 280px;
+  background: rgba(20, 25, 40, 0.95);
+  border: 1px solid var(--accent-color);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  animation: slideInRight 0.4s ease;
+}
+
+.toast-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  text-transform: uppercase;
+}
+
+.toast-body strong {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+.toast-body p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* --- URGENT (Overlay Central) --- */
+.health-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.health-modal-urgent {
+  background: #0f172a;
+  border: 1px solid var(--accent-color);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);
+  animation: scaleUp 0.3s ease;
+}
+
+.urgent-icon {
+  color: var(--accent-color);
+  margin-bottom: 20px;
+  animation: bounce 2s infinite;
+}
+.health-modal-urgent h2 {
+  margin: 0 0 10px 0;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+.exercise-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+.done-btn {
+  background: var(--text-main);
+  color: var(--bg-color);
+  padding: 12px 30px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto;
+  font-weight: bold;
+}
+
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}

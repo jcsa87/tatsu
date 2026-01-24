@@ -1,0 +1,155 @@
+/* Cabecera de la Liga */
+.league-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: linear-gradient(
+    180deg,
+    rgba(56, 189, 248, 0.1) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.league-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.league-timer {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+/* Tabs de Filtro (Weekly / All Time) */
+.lb-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.lb-tab {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.lb-tab.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* --- LISTA DE USUARIOS --- */
+.lb-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lb-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.lb-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
+}
+
+/* Resaltar al usuario actual */
+.lb-row.is-me {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: var(--accent-color);
+}
+
+/* Columnas */
+.lb-rank {
+  width: 30px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.lb-user {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 10px;
+}
+
+.lb-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--text-main);
+}
+
+.lb-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.lb-xp {
+  font-family: monospace;
+  color: var(--gold-xp);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Colores de Podio */
+.lb-row.rank-1 .lb-rank {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+.lb-row.rank-2 .lb-rank {
+  color: #c0c0c0;
+}
+.lb-row.rank-3 .lb-rank {
+  color: #cd7f32;
+}
+
+/* Tendencias (Flechas) */
+.trend-icon {
+  font-size: 0.7rem;
+  margin-left: -5px;
+  margin-right: 5px;
+}
+.trend-up {
+  color: #4ade80;
+} /* Verde */
+.trend-down {
+  color: #f87171;
+} /* Rojo */
+.trend-same {
+  color: #64748b;
+} /* Gris */

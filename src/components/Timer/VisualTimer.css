@@ -1,0 +1,76 @@
+.timer-container {
+  position: relative;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* --- TEXTO DEL TIMER (Fix "Desaparecido") --- */
+.timer-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  font-weight: 200;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-main);
+  z-index: 10; /* Asegura que esté encima de todo */
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Fuente especial para Kanji si quieres que se vea más auténtico */
+.timer-display.kanji-font {
+  font-family: "Yu Mincho", serif;
+  letter-spacing: -5px; /* Los kanjis suelen ser más anchos */
+}
+
+/* --- ESTILO CIRCULAR --- */
+.timer-container.circle {
+  width: 300px;
+  height: 300px;
+}
+
+.progress-ring {
+  transform: rotate(-90deg);
+}
+.ring-fill {
+  transition: stroke-dashoffset 0.35s;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px var(--accent-color)); /* Glow suave */
+}
+
+/* --- ESTILO LINEAL --- */
+.timer-container.line {
+  width: 100%;
+  max-width: 400px;
+  height: 150px; /* Altura suficiente para contener el texto grande */
+  flex-direction: column;
+}
+
+.linear-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 10px; /* Separar un poco del texto que estará centrado */
+  position: absolute;
+  bottom: 20px; /* Poner la línea debajo del texto */
+}
+
+.linear-fill {
+  height: 100%;
+  background: var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-color);
+  transition: width 0.5s ease;
+}
+
+/* En modo línea, ajustamos el texto para que no dependa del círculo */
+.timer-container.line .timer-display {
+  position: static; /* Ya no absoluto */
+  transform: none;
+  margin-bottom: 20px;
+}
